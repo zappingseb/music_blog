@@ -2,10 +2,12 @@
 
 ## How to
 
-You need to fill in the `bericht.md` to write one inside the "konzerte" folder. To do so you can either
+Creating a new Blog entry is so easy now. Just follow the 4 Steps
 
-1. fill in the file yourself in the format
-2. Use the [Claude Skill to dictate](#dictating-it-instead)
+1. Creating Folder
+2. Upload Photos and decide for title photo
+3. Write `bericht.md` or dictate using [Claude Skill to dictate](#dictating-it-instead) your report.
+4. Publish it
 
 In addition you can add videos, soundcloud links and put a proper venue tag, if you wish. Enjoy
 how easy it is to write one now.
