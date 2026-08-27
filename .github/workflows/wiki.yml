@@ -1,0 +1,71 @@
+name: Publish wiki
+
+# The wiki is a separate git repo (<repo>.wiki.git). This job mirrors the wiki/
+# folder into it, so the repo stays the single source of truth.
+#
+# Two things this needs:
+#  * The wiki must already be initialised. GitHub only creates <repo>.wiki.git
+#    once the first page has been saved in the web UI. Until then the clone below
+#    fails with "repository not found".
+#  * A personal access token in the WIKI_TOKEN secret. The built-in GITHUB_TOKEN
+#    cannot push to wikis.
+#
+# Note: the sync deletes wiki pages that no longer exist under wiki/, so edits
+# made directly in the GitHub wiki UI are overwritten on the next push.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'wiki/**'
+      - '.github/workflows/wiki.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wiki
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Mirror wiki/ into the wiki repo
+        env:
+          WIKI_TOKEN: ${{ secrets.WIKI_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${WIKI_TOKEN}" ]; then
+            echo "::error::WIKI_TOKEN secret is empty. Create a PAT with repo scope."
+            exit 1
+          fi
+
+          if ! git clone --depth 1 \
+              "https://x-access-token:${WIKI_TOKEN}@github.com/${GITHUB_REPOSITORY}.wiki.git" \
+              wiki-repo 2>clone.log; then
+            cat clone.log
+            echo "::error::Could not clone ${GITHUB_REPOSITORY}.wiki.git -- open the repo's Wiki tab and save one page to initialise it, and check that WIKI_TOKEN has repo scope."
+            exit 1
+          fi
+
+          rsync -a --delete --exclude '.git' wiki/ wiki-repo/
+
+          cd wiki-repo
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+
+          if git diff --cached --quiet; then
+            echo "Wiki already up to date, nothing to push."
+            exit 0
+          fi
+
+          git commit -m "Sync wiki from ${GITHUB_SHA:0:7}"
+          git push
+          echo "Pushed $(git diff --name-only HEAD~1 HEAD | wc -l) changed page(s)."
