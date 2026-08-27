@@ -216,3 +216,20 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# repo-specific
+konzerte/*
+19_g.jpg
+19.jpg
+
+# theme/ is the live site pulled down over FTP; backups of overwritten
+# remote files are throwaway.
+theme/.remote-backup/
+
+# working copies of <post_id>.jpg headers pulled from the server
+headers/
+server/.remote-backup/
+theme/*
+
+# macOS
+.DS_Store
