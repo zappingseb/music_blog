@@ -12,14 +12,24 @@ NextGEN, and puts the two header variants in place.
 .venv/bin/python -m musicblog.publish konzerte/joss_stone
 ```
 
+## The process
+
+```
+1. create the folder            ┐
+2. drop the photos in,          │  Write a Konzertbericht
+   rename one to title_picture.*│
+3. write the report             ┘
+4. publish                         Publish a Konzertbericht
+```
+
 ## Where to go
 
 | | |
 |---|---|
 | [Installation](Installation) | venv, `.env` keys, the WordPress plugin, `check` |
-| [Write a Konzertbericht](Write-a-Konzertbericht) | the `bericht.md` format, dictating it by voice, videos, tags |
-| [Publish a Konzertbericht](Publish-a-Konzertbericht) | the six steps from empty folder to finished draft |
-| [Other functionalities](Other-functionalities) | crop UI, EXIF dates, rebuilding green headers, theme pull/push |
+| [Write a Konzertbericht](Write-a-Konzertbericht) | **steps 1–3:** folder, photos, and the report — by hand or dictated |
+| [Publish a Konzertbericht](Publish-a-Konzertbericht) | **step 4:** dry run, crop UI, and what lands where |
+| [Other functionalities](Other-functionalities) | crop UI alone, EXIF dates, rebuilding green headers, theme pull/push |
 | [Technical Know-How](Technical-Know-How) | how the pieces fit, and the host's quirks |
 
 ## The two things worth knowing up front

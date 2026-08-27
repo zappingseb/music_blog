@@ -1,59 +1,45 @@
 # Publish a Konzertbericht
 
-Start to finish, the way it actually goes.
+Step 4 of four. Steps 1 to 3 — create the folder, drop the photos in, write the report —
+are on [Write a Konzertbericht](Write-a-Konzertbericht).
 
-## 1. Make the folder, drop the photos in
-
-Folder name: **lowercase with underscores**, like the ones already there
-(`konzerte/joss_stone/`, `konzerte/moop_mama/`).
+So you have this:
 
 ```
 konzerte/<band_name>/
-├── title_picture.jpg        # the shot you want as the header
-└── Camera Uploads/          # the gallery photos - any subfolder name, any nesting
-    └── *.jpg
+├── bericht.md
+├── title_picture.jpg
+└── Camera Uploads/*.jpg
 ```
 
-**Copy** the header shot to `title_picture.jpg`, do not move it. The pipeline skips any
-gallery photo that is byte-identical to the title picture, so it will not appear twice in
-the gallery. The dry run tells you which ones it skipped.
-
-Anything under a dot-directory is ignored, so the generated `.build/` folder never gets
-picked up as gallery material on a re-run.
-
-## 2. Write `bericht.md`
-
-By hand or dictated — see [Write a Konzertbericht](Write-a-Konzertbericht).
-
-## 3. Sanity-check the date
-
-```bash
-.venv/bin/python -m musicblog.publish dates konzerte/<folder>
-```
-
-```
-==> 8 image(s) in konzerte/joss_stone
-    2026:07:13 20:24:10    Camera Uploads/2026-07-13 20.24.10.jpg
-    ...
-==> concert date: 2026-07-13
-    for bericht.md:  - date: 2026-07-13
-```
-
-Photos taken after midnight are counted toward the evening the gig started (timestamps are
-shifted back 5 hours before the date is taken), and one stray photo from another day does
-not outvote the majority.
-
-## 4. Dry run — touches nothing
+## Dry run first — touches nothing
 
 ```bash
 .venv/bin/python -m musicblog.publish konzerte/<folder> --dry-run
 ```
 
-Shows the parsed title, date, slug and tags, which photos are in, which were skipped as
-duplicates of the title picture, the crop it would use *and where that crop comes from*,
-and the rendered Gutenberg body. No uploads, no API calls.
+```
+==> Joss Stone live - Tollwood München
+    date  : 2026-07-13T00:00:00
+    slug  : joss-stone-live-tollwood-muenchen
+    tags  : konzert, konzertbericht
+    status: draft
+==> 6 gallery photo(s), header from title_picture.jpg
+    Camera Uploads/2026-07-13 20.24.10.jpg (1.4 MB)
+    ...
+    skipped, same file as title_picture.jpg: Camera Uploads/2026-07-13 21.05.28.jpg
+==> dry run -- nothing will be uploaded or created
+    crop would be (0, 1241, 4080, 2195) (from .published.json)
+```
 
-## 5. Publish
+Shows the parsed title, date, slug and tags, which photos are in, which were skipped as
+copies of the title picture, the crop it would use *and where that crop comes from*, and the
+rendered Gutenberg body. No uploads, no API calls.
+
+If the date is wrong, fix `- date:` in `bericht.md`. If a photo is missing, check it is not
+sitting in a dot-directory.
+
+## Publish
 
 ```bash
 .venv/bin/python -m musicblog.publish konzerte/<folder>
@@ -63,7 +49,10 @@ The crop UI opens in your browser. The box is locked to the header aspect ratio 
 both variants preview live as you drag, and arrow keys nudge it. Press **"Diesen Ausschnitt
 verwenden"** and the pipeline finishes in the terminal.
 
-What happens, in this order, because the header filenames need the post ID:
+### What happens, in this order
+
+The order is forced by the header filenames — they are named after the post ID, and that ID
+does not exist until the draft does.
 
 1. draft created → **post ID**
 2. `<post_id>.jpg` and `<post_id>_g.jpg` rendered and uploaded to
@@ -74,7 +63,7 @@ What happens, in this order, because the header filenames need the post ID:
 5. `[ngg …]` shortcode appended to the draft
 6. edit URL printed
 
-Useful flags:
+### Useful flags
 
 ```bash
 --crop 0,706,4080,954     # skip the UI, use this rectangle
@@ -85,13 +74,15 @@ Useful flags:
 --status draft            # draft (default), publish, future, pending, private
 ```
 
-## 6. In wp-admin: read it, tag it, publish it
+## Then in wp-admin
 
-The draft is created with the date from `bericht.md`, so publishing puts it in the right
-place chronologically.
+The draft carries the date from `bericht.md`, so publishing puts it in the right place
+chronologically.
 
-**Add the venue and city tags** if they are not already in `bericht.md` — see the end of
-[Write a Konzertbericht](Write-a-Konzertbericht) for why that matters more than it looks.
+1. Read it. Fix whatever the skill got wrong.
+2. **Add the venue and city tags** if they are not already in `bericht.md` — see
+   [Tag the venue and the city](Write-a-Konzertbericht#tag-the-venue-and-the-city).
+3. Press publish.
 
 ## Re-running is safe
 
@@ -116,5 +107,7 @@ endpoint — in that order, so the first `[FAIL]` tells you where it stopped.
 |---|---|
 | `WordPress rejected the credentials` | `WP_PWD` is the login password, not an Application Password |
 | `ngg-helper.php is not installed` | run `plugin-push` |
-| `0 pictures successfully added` | normal on a re-run — it means nothing was *new*, not that nothing is registered |
+| `missing '- date: YYYY-MM-DD' bullet` | the metadata bullet is missing or misspelled |
+| `no title_picture.* in ...` | the header shot is not named `title_picture` |
+| `0 pictures successfully added` | normal on a re-run — nothing was *new*, not nothing registered |
 | gallery admin shows broken thumbnails | thumbnails were not generated; the import action does this, or run it alone |
