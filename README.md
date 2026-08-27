@@ -1,6 +1,6 @@
 # music_blog
 
-Publishes a concert report to [engel-wolf.com](https://engel-wolf.com) — WordPress post,
+Publishes a concert report to [engel-wolf.com](https://engel-wolf.com/?tag=konzert) — WordPress post,
 NextGEN gallery and both header images — with one command.
 
 **📖 [Full user guide in the wiki](https://github.com/zappingseb/music_blog/wiki)**
