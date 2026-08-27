@@ -12,7 +12,14 @@ Pillow ≥ 11.3 for the prebuilt wheels.
 
 ## 2. `.env`
 
-Lives in the repo root and is gitignored. The keys, exactly as they are named:
+Start from the template in the repo:
+
+```bash
+cp .env.example .env
+```
+
+`.env.example` lists every key with a comment on what it is for; `.env` itself is
+gitignored. The keys, exactly as they are named:
 
 ```
 WP_URL=https://engel-wolf.com

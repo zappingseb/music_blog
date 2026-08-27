@@ -18,6 +18,7 @@ NextGEN gallery and both header images — with one command.
 ```bash
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
+cp .env.example .env                                           # then fill it in
 
 .venv/bin/python -m musicblog.publish check                    # is everything reachable?
 .venv/bin/python -m musicblog.publish konzerte/joss_stone      # crop UI, then a draft

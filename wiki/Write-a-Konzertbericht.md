@@ -14,15 +14,6 @@ how easy it is to write one now.
 
 Your first example landed on: [Joss Stone live at Tollwood](https://engel-wolf.com/?p=4964)
 
-## The order of things
-
-```
-1. create the folder
-2. drop the photos in, rename one to title_picture.*
-3. write the report
-4. publish
-```
-
 Steps 1 to 3 are below. Step 4 is [Publish a Konzertbericht](Publish-a-Konzertbericht).
 
 ---

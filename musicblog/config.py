@@ -117,7 +117,8 @@ def load(env_file: Path | None = None) -> Config:
 
     Every missing key is reported at once rather than one per run.
     """
-    load_dotenv(env_file or REPO_ROOT / ".env", override=False)
+    path = Path(env_file) if env_file else REPO_ROOT / ".env"
+    load_dotenv(path, override=False)
 
     missing: list[str] = []
 
@@ -144,7 +145,13 @@ def load(env_file: Path | None = None) -> Config:
     }
     if missing:
         joined = "\n  - ".join(missing)
-        raise ConfigError(f"missing or invalid keys in .env:\n  - {joined}")
+        hint = ""
+        if not path.is_file():
+            hint = f"\n\n{path} does not exist."
+            template = REPO_ROOT / ".env.example"
+            if template.is_file():
+                hint += f" Start from the template:\n  cp {template.name} {path.name}"
+        raise ConfigError(f"missing or invalid keys in .env:\n  - {joined}{hint}")
 
     host, port = _split_host(values["ftp_ip"])
     return Config(
