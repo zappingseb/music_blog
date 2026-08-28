@@ -151,14 +151,3 @@ add_filter('the_content', function ($content) {
     }
     return $content;
 }, 5);
-
-/**
- * SEW About -- server-side rendered landing page.
- *
- * Source of truth is the aboutengelwolfcom repo (plugin/about/), deployed into
- * this plugin's about/ subdirectory by its own `npm run publish`. Guarded so the
- * plugin stays healthy whether or not that module is present.
- */
-if (file_exists(__DIR__ . '/about/bootstrap.php')) {
-    require_once __DIR__ . '/about/bootstrap.php';
-}
